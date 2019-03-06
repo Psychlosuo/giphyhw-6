@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giphy Homework</title>
+  <link rel="stylesheet" href="assets.css.styles.css"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <styles>
+  </styles>
+</head>
+
+<body>
+  <button famousPerson="Jeff Bridges">Jeff Bridges</button>
+  <button famousPerson="Donald Glover">Donald Glover</button>
+  <button famousPerson="Steve Carell">Steve Carell</button>
+  <button famousPerson="Leonardo Dicaprio">Leonardo Decaprio</button>
+  <button famousPerson="Aaron Rodgers">Aaron Rodgers</button>
+  <div id="gifs-appear-here"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function () {
+      console.log("ready!");
+    });
+
+    $("button").on("click", function () {
+      // Grabbing and storing the famous property value from the button
+      var famous = $(this).attr("famousPerson");
+      // Constructing a queryURL using the famous name
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + famous
+        + "&api_key=RMF4j1LIwS0qch9Tj7JhL7n177wWwrXg&limit=10";
+      // Performing an AJAX request with the queryURL
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        .then(function (response) {
+          console.log(queryURL);
+          console.log(response);
+          var results = response.data;
+          for (var i = 0; i < results.length; i++) {
+            var famousDiv = $("<div>");
+            var p = $("<p>").text("Rating: " + results[i].rating);
+            var famousImage = $("<img>");
+            famousImage.attr("src", results[i].images.fixed_height_still.url);
+            famousImage.attr("data-still", results[i].images.fixed_height_still.url);
+            famousImage.attr("data-animate", results[i].images.fixed_height.url);
+            famousImage.attr("data-state", "still");
+            famousImage.addClass("gif");
+            famousDiv.append(p);
+            famousDiv.append(famousImage);
+            $("#gifs-appear-here").prepend(famousDiv);
+          }
+        });
+    });
+    //code looks right, cant get it to work but its here.
+    $(".gif").on("click", function () {
+      var state = $(this).attr("data-state");
+      if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
+      } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+      }
+    });
+  </script>
+</body>
+
+</html>
